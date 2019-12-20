@@ -201,7 +201,7 @@ class _LoginState extends State<Login> {
 
   Future _doRequest () async {
     var data = _isPhone ? {'phone': '86-' + _accountController.text} : {'email': _accountController.text};
-    var res = await HttpUtil().post(Api.VerifyAccount, data: data);
+    var res = await HttpUtil(context).post(Api.VerifyAccount, data: data);
     Map verifyMap = json.decode(res.toString());
     var verifyAccount = VerifyAccount.fromJson(verifyMap);
     if(verifyAccount.status == 1) {

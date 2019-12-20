@@ -1,13 +1,13 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio/dio.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_app/config/api.dart';
-import 'package:flutter_app/provider/user_provider.dart';
-
-
+import 'package:fluttertoast/fluttertoast.dart';
 class HttpUtil {
   static HttpUtil instance;
+
+
   Dio dio;
   BaseOptions options;
 
@@ -17,10 +17,11 @@ class HttpUtil {
     if (null == instance) instance =  HttpUtil();
     return instance;
   }
+  BuildContext context;
   /*
    * config it and create
    */
-  HttpUtil() {
+  HttpUtil([this.context]) {
     //BaseOptions、Options、RequestOptions 都可以配置参数，优先级别依次递增，且可以根据优先级别覆盖参数
     options = BaseOptions(
       //请求基地址,可以包含子路径
@@ -34,6 +35,7 @@ class HttpUtil {
         'Content-Type': 'application/json',
         'code': Api.App_Code,
       },
+      extra: {'context': context}
       //请求的Content-Type，默认值是[ContentType.json]. 也可以用ContentType.parse("application/x-www-form-urlencoded")
       // contentType:  //'application/x-www-form-urlencoded',
       //表示期望以那种格式(方式)接受响应数据。接受4种类型 `json`, `stream`, `plain`, `bytes`. 默认值是 `json`,
@@ -156,6 +158,15 @@ class HttpUtil {
    */
   void formatError(DioError e) {
     if (e.type == DioErrorType.CONNECT_TIMEOUT) {
+      Fluttertoast.showToast(
+        msg: "连接超时！！！",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.black38,
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
       // It occurs when url is opened timeout.
       print("连接超时");
     } else if (e.type == DioErrorType.SEND_TIMEOUT) {
